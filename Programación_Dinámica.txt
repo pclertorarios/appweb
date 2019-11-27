@@ -1,0 +1,80 @@
+#Coin change
+
+import numpy as np
+
+def coinChange(val,change,values,coins):
+    if val<0:
+        return np.inf
+    if change[val] == np.inf:
+        for coin in coins:
+            if coin <= val:
+                if(change[val]>coinChange(val-coin,change,values,coins)):
+                    change[val]=1+coinChange(val-coin,change,values,coins)
+                    values[val]=coin
+            else:
+                break
+    return change[val]
+
+val=int(input())
+coins=[1,5,10,20,25,50]
+change=[np.inf]*(val+1)
+values=[np.inf]*(val+1)
+change[0]=0
+
+print("Para " + str(val) + " centavos, el cambio sera de: " + str(coinChange(val,change,values,coins)) + " monedas")
+print("Las monedas son: ")
+while(val>0):
+    print(values[val])
+    val-=values[val]
+
+
+#Rod Cutting
+
+import numpy as np
+
+def rodCutting(long_vara,longitudes,ganancias,precios):
+    if long_vara<0:
+        return -np.inf
+    if ganancias[long_vara] == 0:
+        for longitud in range(1,len(precios)):
+            if longitud <= long_vara:
+                if(ganancias[long_vara]<precios[longitud]+rodCutting(long_vara-longitud,longitudes,ganancias,precios)):
+                    ganancias[long_vara]=precios[longitud]+rodCutting(long_vara-longitud,longitudes,ganancias,precios)
+                    longitudes[long_vara]=longitud
+            else:
+                break
+    return ganancias[long_vara]
+
+long_vara=int(input())
+precios=[0,1,5,8,9,10,17,17,20,24,30]
+longitudes=[-np.inf]*(long_vara+1)
+longitudes[0]=0
+ganancias=[0]*(long_vara+1)
+
+print("Para una vara de " + str(long_vara) + " metros, la maxima ganancia sera de: " + str(rodCutting(long_vara,longitudes,ganancias,precios)) + " soles")
+print("Las monedas son: ")
+while(long_vara>0):
+    print(longitudes[long_vara])
+    long_vara-=longitudes[long_vara]
+
+
+#Mochila
+    
+import numpy as np 
+
+Pesos   = [0,5,1,5,3]
+Valores = [0,1,3,3,2]
+
+nO = len(Pesos)
+capacidad = 8
+
+M = np.zeros(shape=(nO,capacidad+1))
+
+for objeto in range(1,nO):
+    for cap in range(1,capacidad+1):
+        if cap-Pesos[objeto]>=0:
+            M[objeto][cap]=max(Valores[objeto]+M[objeto-1][cap-Pesos[objeto]],M[objeto-1][cap])
+        else:
+            M[objeto][cap]=M[objeto-1][cap]
+
+print(M)

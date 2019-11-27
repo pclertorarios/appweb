@@ -1,0 +1,317 @@
+// Kruskal.cpp : Este archivo contiene la función "main". La ejecución del programa comienza y termina ahí.
+//
+#include <vector>
+#include <algorithm>
+#include <set>
+#include <iostream>
+
+
+class arista
+{
+private:
+	int origen;
+	int destino;
+	int peso;
+public:
+	arista(int o, int p, int d) :origen(o), peso(p), destino(d)
+	{
+	}
+	int GETorigen()
+	{
+		return this->origen;
+	}
+	int GETPeso()
+	{
+		return this->peso;
+	}
+	int GETDestino()
+	{
+		return this->destino;
+	}
+};
+
+class grafo
+{
+private :
+	int nvertice;
+	int naristas;
+	int costototal;
+	std::vector<int> parent;
+	std::vector<int> rank;
+
+	std::vector<arista*> aristas;
+
+public:
+	grafo(int n)
+	{
+		this->nvertice = n;
+		this->naristas = 0;
+		this->costototal = 0;
+	}
+	int GetCostototal()
+	{
+		return this->costototal;
+	}
+	//UFDS
+	void MateSet()
+	{
+		for (int i = 0; i < nvertice; ++i)
+		{
+			parent.push_back(i);
+			rank.push_back(0);
+		}
+
+
+	}
+	//UFDS
+	bool isSameSet(int p, int q)
+	{
+		return (parent.at(p) == parent.at(q));
+	}
+	int findSet(int x)
+	{
+		if (parent.at(x) = !x)
+		{
+			parent.at(x) = findSet(parent.at(x));
+		}
+		return parent.at(x);
+	}
+	//UDFS
+	void Union(int p, int q)
+	{
+		int pparent = findSet(p);
+		int qparent = findSet(q);
+		if (isSameSet(pparent, qparent))
+		{
+			return;
+		}
+		if (rank.at(pparent)<rank.at(qparent))
+		{
+			parent.at(pparent) = qparent;
+		}
+		else if (rank.at(pparent) > rank.at(qparent))
+		{
+			parent.at(qparent) = pparent;
+		}else 
+		{
+			parent.at(pparent) = qparent;
+			rank.at(pparent)++;
+		}
+
+	}
+	void Agregararista(int origen, int peso, int destino)
+	{
+		arista* arista1 = new arista(origen, peso, destino);
+		arista* arista2 = new arista(destino,peso,origen);
+		
+		aristas.push_back(arista1);
+		aristas.push_back(arista2);
+		this->naristas = +2;
+	}
+	void Mostrarvalores()
+	{
+		for (int i= 0; i < naristas; ++i)
+		{
+			std::cout << aristas.at(i)->GETorigen()<< "-" <<
+				aristas.at(i)->GETDestino() << ":" <<
+				aristas.at(i)->GETPeso() << "\n" ;
+
+		}
+	}
+	void Ordenar()
+	{
+		for (int i = 0; i < aristas.size(); ++i)
+		{
+			std::sort(aristas.begin(), aristas.end(), [](auto & left, auto & right) {
+				return left->GETPeso() < right->GETPeso();
+			});
+			}
+		
+	}
+	void Kruskal()
+	{
+		std::vector<arista*>a;
+		MateSet();
+		Ordenar();
+		for (auto edge : aristas) 
+		{
+			int u = edge->GETorigen();
+			int v = edge->GETDestino();
+			if (findSet(u) != findSet(v))
+			{
+				a.push_back(edge);
+				Union(u, v);
+			}
+		}
+
+		for(auto arista : a)
+		{
+			std::cout<<arista->GETorigen() << "+" << arista->GETDestino();
+			std::cout << "Peso : " << arista->GETPeso() << "\n";
+			this->costototal += arista->GETPeso();
+		}
+	}
+	void showSet()
+	{
+		for (int i = 0; i < nvertice; +i++)
+		{
+			std::cout << "Parent of :" << i << "is" << parent.at(i);
+			std::cout << "and its rank is" << rank.at(i) << "\n";
+		}
+		
+	}
+	int contarConjuntos()
+	{
+		return static_cast<int>(std::set<int>(parent.begin(), parent.end()).size() - 1);
+	}
+};
+//Para q kruskal funcione el arreglo de las aristas debe estar ordenado
+
+
+int main()
+{
+    std::cout << "Hello World!\n";
+}
+//COMPLEJIDAD : (V+E)
+
+
+------------------------------------------
+#include <Bits.h>
+
+struct Edge
+{
+	int src, dest, weight;
+};
+
+struct Graph
+{
+	int V; E;
+
+	struct Edge* edge;
+};
+
+struct Graph* createGraph(int V, int E)
+{
+	struct Graph* graph = new Graph;
+	graph->V = V;
+	graph->edge = E;
+	graph->edge = new Edge[E];
+	return graph;
+}
+
+void  printArray(int dist[], int n)
+{
+	printf("Vertex Distance from source\n");
+	for (int i = 0; i < n; ++i)
+	{
+		print("%d\t%d\n", i, dist[i]));
+	}
+}
+void BellmandFord(struct Graph* graph, int src)
+{
+	int V = graph->V;
+	int E = graph->E;
+	int dist[V];
+
+	for (int i = 0; i < V; i++)
+	{
+		dist[i] = INT_MAX;
+		dist[src] = 0;
+
+
+		for (int j = 0; j < E; j++)
+		{
+			int u = graph->edge[j].src;
+			int v = graph->edge[j].dest;
+			if (dist[u] != INT_MAX && dit[u] + weight < dist[v])
+				dist[v] = dist[u] + weight;
+		}
+	}
+}
+for (int i = 0; i < E; i++)
+{
+	int u = graph->edge[i].src;
+	int v = graph->edge[i].dest;
+	int weight = graph->edge[i].weight;
+	if (dist[u] != INT_MAX && dist[u] + weight < dist[u])
+		printf("Graph contains negative weight cycle");
+	printArr(dist, V);
+
+	return;
+}
+
+int main()
+{
+	int V = 5;
+	int E = 8;
+	struct Graph* graph = createGraph(V, E);
+	graph->edge[0].src = 0;
+	graph->edge[0].dest = 1;
+	graph->edge[0].weight = 4;
+
+	BellmandFord(graph, 0);
+	return 0;
+}
+		
+//COMPLEJIDAD : O(V*3)
+
+------------------------------------------
+#include <iostream>
+#include <limits>
+#include <queue>
+#include <string.h>
+
+using namespace std;
+
+#define V 6
+
+bool bfs(int rGraph[V][V], int s, int t, int parent[])
+{
+	bool visited(V);
+	memset(visited, 0, sizeof(visited));
+
+	queue <int> q;
+	q.push(s);
+	visited(s) = true;
+	parent[s] = -1;
+
+	while (iq.empty())
+	{
+		int u = q.front();
+		q.pop();
+		for (int v = 0; v < V, v++)
+		{
+			if (visited(v) == false && rGraph[u][v] > 0)
+			{
+				q.push(v);
+				parent(v) = u;
+				visited(v) = true;
+			}
+		}
+	}
+	return (visited[t] == true);
+}
+
+int fordFullkerson(int graph[V][V]; int s; int t)
+{
+	int u, v;
+	int rGraph[V][V];
+	for (v = 0; v < V; ++u)
+	{
+		rGraph[u][v] -= path_flow;
+		rGraph[v][u] += path_flow;
+	}
+	return max_flow;
+}
+
+int main()
+{
+	int graph[V][V] = { {0,16,13,0,0},
+					{0,0,10,12,0,0},
+					{0,4,0,0,14,0},
+					{0,0,9,0,0,20},
+					{0,0,0,7,0,4},
+					{0,0,0,0,0,0} };
+	cout << "The maximum possible flow is : " << fordFullkerson(graph, 0, 5);
+	return 0;
+}
